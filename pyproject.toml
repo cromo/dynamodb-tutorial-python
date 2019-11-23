@@ -6,6 +6,7 @@ authors = ["Cristian Romo <cristian.g.romo@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+boto3 = "^1.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"

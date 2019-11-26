@@ -217,10 +217,6 @@ def step_3_6_delete_an_item():
             Key={
                 'year': year,
                 'title': title
-            },
-            ConditionExpression="info.rating <= :val",
-            ExpressionAttributeValues={
-                ":val": decimal.Decimal(5)
             }
         )
     except ClientError as e:

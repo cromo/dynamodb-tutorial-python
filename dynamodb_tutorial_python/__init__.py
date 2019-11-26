@@ -186,7 +186,7 @@ def step_3_5_update_an_item_conditionally():
                 'title': title
             },
             UpdateExpression="remove info.actors[0]",
-            ConditionExpression="size(info.actors) > :num",
+            ConditionExpression="size(info.actors) >= :num",
             ExpressionAttributeValues={
                 ':num': 3
             },

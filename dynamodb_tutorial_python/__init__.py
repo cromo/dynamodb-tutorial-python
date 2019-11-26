@@ -9,7 +9,8 @@ def main():
     # step_2_load_sample_data()
     # step_3_1_create_a_new_item()
     # step_3_2_read_an_item()
-    step_3_3_update_an_item()
+    # step_3_3_update_an_item()
+    step_3_4_increment_an_atomic_counter()
 
 def step_1_create_a_table():
     dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
@@ -137,6 +138,29 @@ def step_3_3_update_an_item():
             ':r': decimal.Decimal(5.5),
             ':p': "Everything happens all at once.",
             ':a': ["Larry", "Moe", "Curly"]
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+
+    print("UpdateItem succeeded:")
+    print(json.dumps(response, indent=4, cls=DecimalEncoder))
+
+def step_3_4_increment_an_atomic_counter():
+    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+
+    table = dynamodb.Table('Movies')
+
+    title = "The Big New Movie"
+    year = 2015
+
+    response = table.update_item(
+        Key={
+            'year': year,
+            'title': title
+        },
+        UpdateExpression="set info.rating = info.rating + :val",
+        ExpressionAttributeValues={
+            ':val': decimal.Decimal(1)
         },
         ReturnValues="UPDATED_NEW"
     )

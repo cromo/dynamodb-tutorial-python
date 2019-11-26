@@ -13,7 +13,8 @@ def main():
     # step_3_4_increment_an_atomic_counter()
     # step_3_5_update_an_item_conditionally()
     # step_3_6_delete_an_item()
-    step_4_1_query_all_movies_released_in_a_year()
+    # step_4_1_query_all_movies_released_in_a_year()
+    step_4_2_query_all_movies_released_in_a_year_with_certain_titles()
 
 def step_1_create_a_table():
     dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
@@ -242,6 +243,22 @@ def step_4_1_query_all_movies_released_in_a_year():
 
     for i in response['Items']:
         print(i['year'], ":", i['title'])
+
+def step_4_2_query_all_movies_released_in_a_year_with_certain_titles():
+    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+
+    table = dynamodb.Table('Movies')
+
+    print("Movies from 1992 - titles A-L, with genres and lead actor")
+
+    response = table.query(
+        ProjectionExpression="#yr, title, info.genres, info.actors[0]",
+        ExpressionAttributeNames={"#yr": "year"},
+        KeyConditionExpression=Key('year').eq(1992) & Key('title').between('A', 'L')
+    )
+
+    for i in response[u'Items']:
+        print(json.dumps(i, cls=DecimalEncoder))
 
 __version__ = '0.1.0'
 __main__ = main

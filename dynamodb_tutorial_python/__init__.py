@@ -14,7 +14,8 @@ def main():
     # step_3_5_update_an_item_conditionally()
     # step_3_6_delete_an_item()
     # step_4_1_query_all_movies_released_in_a_year()
-    step_4_2_query_all_movies_released_in_a_year_with_certain_titles()
+    # step_4_2_query_all_movies_released_in_a_year_with_certain_titles()
+    step_4_3_scan()
 
 def step_1_create_a_table():
     dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
@@ -259,6 +260,36 @@ def step_4_2_query_all_movies_released_in_a_year_with_certain_titles():
 
     for i in response[u'Items']:
         print(json.dumps(i, cls=DecimalEncoder))
+
+def step_4_3_scan():
+    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+
+    table = dynamodb.Table('Movies')
+
+    fe = Key('year').between(1950, 1959)
+    pe = "#yr, title, info.rating"
+    ean = {"#yr": "year"}
+    esk = None
+
+    response = table.scan(
+        FilterExpression=fe,
+        ProjectionExpression=pe,
+        ExpressionAttributeNames=ean
+    )
+
+    for i in response['Items']:
+        print(json.dumps(i, cls=DecimalEncoder))
+    
+    while 'LastEvaluatedKey' in response:
+        response = table.scan(
+            ProjectionExpression=pe,
+            FilterExpression=fe,
+            ExpressionAttributeNames=ean,
+            ExclusiveStartKey=response['LastEvaluatedKey']
+        )
+
+        for i in response['Items']:
+            print(json.dumps(i, cls=DecimalEncoder))
 
 __version__ = '0.1.0'
 __main__ = main

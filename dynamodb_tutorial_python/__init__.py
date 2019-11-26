@@ -15,7 +15,8 @@ def main():
     # step_3_6_delete_an_item()
     # step_4_1_query_all_movies_released_in_a_year()
     # step_4_2_query_all_movies_released_in_a_year_with_certain_titles()
-    step_4_3_scan()
+    # step_4_3_scan()
+    step_5_delete_the_table()
 
 def step_1_create_a_table():
     dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
@@ -290,6 +291,13 @@ def step_4_3_scan():
 
         for i in response['Items']:
             print(json.dumps(i, cls=DecimalEncoder))
+
+def step_5_delete_the_table():
+    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+
+    table = dynamodb.Table('Movies')
+
+    table.delete()
 
 __version__ = '0.1.0'
 __main__ = main

@@ -5,17 +5,17 @@ from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
 
 def main():
-    # step_1_create_a_table()
-    # step_2_load_sample_data()
-    # step_3_1_create_a_new_item()
-    # step_3_2_read_an_item()
-    # step_3_3_update_an_item()
-    # step_3_4_increment_an_atomic_counter()
-    # step_3_5_update_an_item_conditionally()
-    # step_3_6_delete_an_item()
-    # step_4_1_query_all_movies_released_in_a_year()
-    # step_4_2_query_all_movies_released_in_a_year_with_certain_titles()
-    # step_4_3_scan()
+    step_1_create_a_table()
+    step_2_load_sample_data()
+    step_3_1_create_a_new_item()
+    step_3_2_read_an_item()
+    step_3_3_update_an_item()
+    step_3_4_increment_an_atomic_counter()
+    step_3_5_update_an_item_conditionally()
+    step_3_6_delete_an_item()
+    step_4_1_query_all_movies_released_in_a_year()
+    step_4_2_query_all_movies_released_in_a_year_with_certain_titles()
+    step_4_3_scan()
     step_5_delete_the_table()
 
 def step_1_create_a_table():

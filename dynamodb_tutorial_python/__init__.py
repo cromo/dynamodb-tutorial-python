@@ -12,7 +12,8 @@ def main():
     # step_3_3_update_an_item()
     # step_3_4_increment_an_atomic_counter()
     # step_3_5_update_an_item_conditionally()
-    step_3_6_delete_an_item()
+    # step_3_6_delete_an_item()
+    step_4_1_query_all_movies_released_in_a_year()
 
 def step_1_create_a_table():
     dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
@@ -227,6 +228,20 @@ def step_3_6_delete_an_item():
     else:
         print("DeleteItem succeeded:")
         print(json.dumps(response, indent=4, cls=DecimalEncoder))
+
+def step_4_1_query_all_movies_released_in_a_year():
+    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+
+    table = dynamodb.Table('Movies')
+
+    print("Movies from 1985")
+
+    response = table.query(
+        KeyConditionExpression=Key('year').eq(1985)
+    )
+
+    for i in response['Items']:
+        print(i['year'], ":", i['title'])
 
 __version__ = '0.1.0'
 __main__ = main

@@ -11,3 +11,5 @@ How to run the local DynamoDB instance using Docker::
 How to run the tutorial program::
 
     poetry run main
+
+The main body of the code is from Amazon's tutorial and is under the Apache 2.0 license.

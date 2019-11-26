@@ -11,7 +11,8 @@ def main():
     # step_3_2_read_an_item()
     # step_3_3_update_an_item()
     # step_3_4_increment_an_atomic_counter()
-    step_3_5_update_an_item_conditionally()
+    # step_3_5_update_an_item_conditionally()
+    step_3_6_delete_an_item()
 
 def step_1_create_a_table():
     dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
@@ -199,6 +200,36 @@ def step_3_5_update_an_item_conditionally():
             raise
     else:
         print("UpdateItem succeeded:")
+        print(json.dumps(response, indent=4, cls=DecimalEncoder))
+
+def step_3_6_delete_an_item():
+    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+
+    table = dynamodb.Table('Movies')
+
+    title = "The Big New Movie"
+    year = 2015
+
+    print ("Attempting a conditional delete...")
+
+    try:
+        response = table.delete_item(
+            Key={
+                'year': year,
+                'title': title
+            },
+            ConditionExpression="info.rating <= :val",
+            ExpressionAttributeValues={
+                ":val": decimal.Decimal(5)
+            }
+        )
+    except ClientError as e:
+        if e.response['Error']['Code'] == "ConditionalCheckFailedException":
+            print(e.response['Error']['Message'])
+        else:
+            raise
+    else:
+        print("DeleteItem succeeded:")
         print(json.dumps(response, indent=4, cls=DecimalEncoder))
 
 __version__ = '0.1.0'

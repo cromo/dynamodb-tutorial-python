@@ -10,7 +10,8 @@ def main():
     # step_3_1_create_a_new_item()
     # step_3_2_read_an_item()
     # step_3_3_update_an_item()
-    step_3_4_increment_an_atomic_counter()
+    # step_3_4_increment_an_atomic_counter()
+    step_3_5_update_an_item_conditionally()
 
 def step_1_create_a_table():
     dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
@@ -167,6 +168,38 @@ def step_3_4_increment_an_atomic_counter():
 
     print("UpdateItem succeeded:")
     print(json.dumps(response, indent=4, cls=DecimalEncoder))
+
+def step_3_5_update_an_item_conditionally():
+    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+
+    table = dynamodb.Table('Movies')
+
+    title = "The Big New Movie"
+    year = 2015
+
+    print("Attempting conditional update...")
+
+    try:
+        response = table.update_item(
+            Key={
+                'year': year,
+                'title': title
+            },
+            UpdateExpression="remove info.actors[0]",
+            ConditionExpression="size(info.actors) > :num",
+            ExpressionAttributeValues={
+                ':num': 3
+            },
+            ReturnValues="UPDATED_NEW"
+        )
+    except ClientError as e:
+        if e.response['Error']['Code'] == "ConditionalCheckFailedException":
+            print(e.response['Error']['Message'])
+        else:
+            raise
+    else:
+        print("UpdateItem succeeded:")
+        print(json.dumps(response, indent=4, cls=DecimalEncoder))
 
 __version__ = '0.1.0'
 __main__ = main

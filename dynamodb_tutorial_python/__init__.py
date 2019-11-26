@@ -8,7 +8,8 @@ def main():
     # step_1_create_a_table()
     # step_2_load_sample_data()
     # step_3_1_create_a_new_item()
-    step_3_2_read_an_item()
+    # step_3_2_read_an_item()
+    step_3_3_update_an_item()
 
 def step_1_create_a_table():
     dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
@@ -117,6 +118,31 @@ def step_3_2_read_an_item():
         item = response['Item']
         print("GetItem succeeded:")
         print(json.dumps(item, indent=4, cls=DecimalEncoder))
+
+def step_3_3_update_an_item():
+    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+
+    table = dynamodb.Table('Movies')
+
+    title = "The Big New Movie"
+    year = 2015
+
+    response = table.update_item(
+        Key={
+            'year': year,
+            'title': title
+        },
+        UpdateExpression="set info.rating = :r, info.plot=:p, info.actors=:a",
+        ExpressionAttributeValues={
+            ':r': decimal.Decimal(5.5),
+            ':p': "Everything happens all at once.",
+            ':a': ["Larry", "Moe", "Curly"]
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+
+    print("UpdateItem succeeded:")
+    print(json.dumps(response, indent=4, cls=DecimalEncoder))
 
 __version__ = '0.1.0'
 __main__ = main

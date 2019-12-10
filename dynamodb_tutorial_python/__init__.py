@@ -5,21 +5,33 @@ from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
 
 def main():
+    print("step_1_create_a_table()")
     step_1_create_a_table()
+    print("step_2_load_sample_data()")
     step_2_load_sample_data()
+    print("step_3_1_create_a_new_item()")
     step_3_1_create_a_new_item()
+    print("step_3_2_read_an_item()")
     step_3_2_read_an_item()
+    print("step_3_3_update_an_item()")
     step_3_3_update_an_item()
+    print("step_3_4_increment_an_atomic_counter()")
     step_3_4_increment_an_atomic_counter()
+    print("step_3_5_update_an_item_conditionally()")
     step_3_5_update_an_item_conditionally()
+    print("step_3_6_delete_an_item()")
     step_3_6_delete_an_item()
+    print("step_4_1_query_all_movies_released_in_a_year()")
     step_4_1_query_all_movies_released_in_a_year()
+    print("step_4_2_query_all_movies_released_in_a_year_with_certain_titles()")
     step_4_2_query_all_movies_released_in_a_year_with_certain_titles()
+    print("step_4_3_scan()")
     step_4_3_scan()
+    print("step_5_delete_the_table()")
     step_5_delete_the_table()
 
 def step_1_create_a_table():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.create_table(
         TableName='Movies',
@@ -50,9 +62,12 @@ def step_1_create_a_table():
     )
 
     print("Table status:", table.table_status)
+    while table.table_status != 'ACTIVE':
+        table.load()
+        print("Table status:", table.table_status)
 
 def step_2_load_sample_data():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
@@ -83,7 +98,7 @@ class DecimalEncoder(json.JSONEncoder):
         return super(DecimalEncoder, self).default(o)
 
 def step_3_1_create_a_new_item():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
@@ -105,7 +120,7 @@ def step_3_1_create_a_new_item():
     print(json.dumps(response, indent=4, cls=DecimalEncoder))
 
 def step_3_2_read_an_item():
-    dynamodb = boto3.resource("dynamodb", region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource("dynamodb", region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
@@ -127,7 +142,7 @@ def step_3_2_read_an_item():
         print(json.dumps(item, indent=4, cls=DecimalEncoder))
 
 def step_3_3_update_an_item():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
@@ -152,7 +167,7 @@ def step_3_3_update_an_item():
     print(json.dumps(response, indent=4, cls=DecimalEncoder))
 
 def step_3_4_increment_an_atomic_counter():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
@@ -175,7 +190,7 @@ def step_3_4_increment_an_atomic_counter():
     print(json.dumps(response, indent=4, cls=DecimalEncoder))
 
 def step_3_5_update_an_item_conditionally():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
@@ -207,7 +222,7 @@ def step_3_5_update_an_item_conditionally():
         print(json.dumps(response, indent=4, cls=DecimalEncoder))
 
 def step_3_6_delete_an_item():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
@@ -233,7 +248,7 @@ def step_3_6_delete_an_item():
         print(json.dumps(response, indent=4, cls=DecimalEncoder))
 
 def step_4_1_query_all_movies_released_in_a_year():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
@@ -247,7 +262,7 @@ def step_4_1_query_all_movies_released_in_a_year():
         print(i['year'], ":", i['title'])
 
 def step_4_2_query_all_movies_released_in_a_year_with_certain_titles():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
@@ -263,7 +278,7 @@ def step_4_2_query_all_movies_released_in_a_year_with_certain_titles():
         print(json.dumps(i, cls=DecimalEncoder))
 
 def step_4_3_scan():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
@@ -293,7 +308,7 @@ def step_4_3_scan():
             print(json.dumps(i, cls=DecimalEncoder))
 
 def step_5_delete_the_table():
-    dynamodb = boto3.resource('dynamodb', region_name='us-west-2', endpoint_url="http://localhost:8000")
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
 
     table = dynamodb.Table('Movies')
 
